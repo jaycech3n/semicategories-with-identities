@@ -17,8 +17,7 @@ module _ {j₁ j₂} (C : Semicategory j₁ j₂) where
   open Semicategory C
 ```
 
-  "Naive" Identities
-  ------------------
+  ### "Naive" Identities
 
   A "naive identity" is a morphism which is left- and right-neutral. This is the
   usual, well known definition. We take the -1-truncation because we are working
@@ -28,12 +27,9 @@ module _ {j₁ j₂} (C : Semicategory j₁ j₂) where
   NaivId = (x : Ob) → ‖ Σ (Hom x x) is-neutral ‖
   ```
 
-  Idempotent Equivalences
-  -----------------------
+  ### Idempotent Equivalences
 
-  An idempotent endomorphism f is one where f ⋄ f == f.
-
-  See the file <IdempotentEquivalences.lagda.md> for more.
+  See the following imported module for more.
 
   ```agda
   open import IdempotentEquivalences C
@@ -41,8 +37,7 @@ module _ {j₁ j₂} (C : Semicategory j₁ j₂) where
   IdemEqv = (x : Ob) → idem-eqv x
   ```
 
-  Harpaz Identities
-  -----------------
+  ### Harpaz Identities
 
   This is a non-univalent version of "completeness" as formulated by Harpaz.
 
@@ -50,8 +45,7 @@ module _ {j₁ j₂} (C : Semicategory j₁ j₂) where
   HarpazId = (x : Ob) → ‖ Σ[ y ﹕ Ob ] eqv x y ‖
   ```
 
-  Initial and Terminal Morphisms
-  ------------------------------
+  ### Initial and Terminal Morphisms
 
   The identity morphisms in a category are the initial and terminal objects in
   the under and over categories. We may formulate the analogous notion in our
@@ -62,8 +56,7 @@ module _ {j₁ j₂} (C : Semicategory j₁ j₂) where
     (x : Ob) → ‖ Σ[ f ﹕ Hom x x ] initial-under x f × terminal-over x f ‖
   ```
 
-  Endo-equivalences
-  -----------------
+  ### Endo-equivalences
 
   Finally, we may ask that every object has an endomorphism that's an
   equivalence.
