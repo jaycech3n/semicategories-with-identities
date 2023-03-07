@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Semicategories</title>
+  <link rel="stylesheet" href="Agda.css">
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="morphisms-in-wild-semicategories">Morphisms in Wild
+Semicategories</h1>
+<p>Semicategories are "categories without identities". We develop the
+theory of morphisms in such structures in HoTT. We use the general
+notion of a <em>wild</em> semicategory, i.e. where no truncation
+conditions are required.</p>
+<pre class="Agda"><a id="294" class="Symbol">{-#</a> <a id="298" class="Keyword">OPTIONS</a> <a id="306" class="Pragma">--without-K</a> <a id="318" class="Pragma">--rewriting</a> <a id="330" class="Symbol">#-}</a>
+
+<a id="335" class="Keyword">module</a> <a id="342" href="Semicategories.html" class="Module">Semicategories</a> <a id="357" class="Keyword">where</a>
+
+<a id="364" class="Keyword">open</a> <a id="369" class="Keyword">import</a> <a id="376" href="HoTT.html" class="Module">HoTT</a>
+<a id="381" class="Keyword">open</a> <a id="386" class="Keyword">import</a> <a id="393" href="Notation.html" class="Module">Notation</a>
+
+<a id="403" class="Keyword">import</a> <a id="410" href="Equivalence.html" class="Module">Equivalence</a>
+</pre>
+
+<p>A <em>wild semicategory</em> consists of:</p>
+<ul>
+<li>a type of objects <code>Ob</code>,</li>
+<li>a type family of morphisms <code>Hom</code>, and</li>
+<li>an associative composition operation <code>⋄</code>.</li>
+</ul>
+<p>This is of course just a wild category without identities. Note that
+we do <em>not</em> ask for set-truncation: Ob and Hom are arbitrary
+types/type families.</p>
+<pre class="Agda"><a id="739" class="Keyword">record</a> <a id="Semicategory"></a><a id="746" href="Semicategories.html#746" class="Record">Semicategory</a> <a id="759" href="Semicategories.html#759" class="Bound">j₁</a> <a id="762" href="Semicategories.html#762" class="Bound">j₂</a> <a id="765" class="Symbol">:</a> <a id="767" href="lib.Base.html#1144" class="Function">Type</a> <a id="772" class="Symbol">(</a><a id="773" href="lib.Base.html#1123" class="Primitive">lsucc</a> <a id="779" class="Symbol">(</a><a id="780" href="lib.Base.html#1137" class="Primitive">lmax</a> <a id="785" href="Semicategories.html#759" class="Bound">j₁</a> <a id="788" href="Semicategories.html#762" class="Bound">j₂</a><a id="790" class="Symbol">))</a> <a id="793" class="Keyword">where</a>
+  <a id="801" class="Keyword">infixr</a> <a id="808" class="Number">40</a> <a id="811" href="Semicategories.html#873" class="Field Operator">_⋄_</a>
+  <a id="817" class="Keyword">field</a>
+    <a id="Semicategory.Ob"></a><a id="827" href="Semicategories.html#827" class="Field">Ob</a>  <a id="831" class="Symbol">:</a> <a id="833" href="lib.Base.html#1144" class="Function">Type</a> <a id="838" href="Semicategories.html#759" class="Bound">j₁</a>
+    <a id="Semicategory.Hom"></a><a id="845" href="Semicategories.html#845" class="Field">Hom</a> <a id="849" class="Symbol">:</a> <a id="851" href="Semicategories.html#827" class="Field">Ob</a> <a id="854" class="Symbol">→</a> <a id="856" href="Semicategories.html#827" class="Field">Ob</a> <a id="859" class="Symbol">→</a> <a id="861" href="lib.Base.html#1144" class="Function">Type</a> <a id="866" href="Semicategories.html#762" class="Bound">j₂</a>
+    <a id="Semicategory._⋄_"></a><a id="873" href="Semicategories.html#873" class="Field Operator">_⋄_</a> <a id="877" class="Symbol">:</a> <a id="879" class="Symbol">∀</a> <a id="881" class="Symbol">{</a><a id="882" href="Semicategories.html#882" class="Bound">x</a> <a id="884" href="Semicategories.html#884" class="Bound">y</a> <a id="886" href="Semicategories.html#886" class="Bound">z</a><a id="887" class="Symbol">}</a> <a id="889" class="Symbol">→</a> <a id="891" href="Semicategories.html#845" class="Field">Hom</a> <a id="895" href="Semicategories.html#884" class="Bound">y</a> <a id="897" href="Semicategories.html#886" class="Bound">z</a> <a id="899" class="Symbol">→</a> <a id="901" href="Semicategories.html#845" class="Field">Hom</a> <a id="905" href="Semicategories.html#882" class="Bound">x</a> <a id="907" href="Semicategories.html#884" class="Bound">y</a> <a id="909" class="Symbol">→</a> <a id="911" href="Semicategories.html#845" class="Field">Hom</a> <a id="915" href="Semicategories.html#882" class="Bound">x</a> <a id="917" href="Semicategories.html#886" class="Bound">z</a>
+    <a id="Semicategory.ass"></a><a id="923" href="Semicategories.html#923" class="Field">ass</a> <a id="927" class="Symbol">:</a> <a id="929" class="Symbol">∀</a> <a id="931" class="Symbol">{</a><a id="932" href="Semicategories.html#932" class="Bound">x</a> <a id="934" href="Semicategories.html#934" class="Bound">y</a> <a id="936" href="Semicategories.html#936" class="Bound">z</a> <a id="938" href="Semicategories.html#938" class="Bound">w</a><a id="939" class="Symbol">}</a> <a id="941" class="Symbol">{</a><a id="942" href="Semicategories.html#942" class="Bound">f</a> <a id="944" class="Symbol">:</a> <a id="946" href="Semicategories.html#845" class="Field">Hom</a> <a id="950" href="Semicategories.html#936" class="Bound">z</a> <a id="952" href="Semicategories.html#938" class="Bound">w</a><a id="953" class="Symbol">}</a> <a id="955" class="Symbol">{</a><a id="956" href="Semicategories.html#956" class="Bound">g</a> <a id="958" class="Symbol">:</a> <a id="960" href="Semicategories.html#845" class="Field">Hom</a> <a id="964" href="Semicategories.html#934" class="Bound">y</a> <a id="966" href="Semicategories.html#936" class="Bound">z</a><a id="967" class="Symbol">}</a> <a id="969" class="Symbol">{</a><a id="970" href="Semicategories.html#970" class="Bound">h</a> <a id="972" class="Symbol">:</a> <a id="974" href="Semicategories.html#845" class="Field">Hom</a> <a id="978" href="Semicategories.html#932" class="Bound">x</a> <a id="980" href="Semicategories.html#934" class="Bound">y</a><a id="981" class="Symbol">}</a>
+          <a id="993" class="Symbol">→</a> <a id="995" class="Symbol">(</a><a id="996" href="Semicategories.html#942" class="Bound">f</a> <a id="998" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="1000" href="Semicategories.html#956" class="Bound">g</a><a id="1001" class="Symbol">)</a> <a id="1003" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="1005" href="Semicategories.html#970" class="Bound">h</a> <a id="1007" href="lib.Base.html#1953" class="Datatype Operator">==</a> <a id="1010" href="Semicategories.html#942" class="Bound">f</a> <a id="1012" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="1014" class="Symbol">(</a><a id="1015" href="Semicategories.html#956" class="Bound">g</a> <a id="1017" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="1019" href="Semicategories.html#970" class="Bound">h</a><a id="1020" class="Symbol">)</a>
+</pre>
+
+<p>For the rest of this file we work in a generic wild semicategory.</p>
+<h2 id="pre--and-post-composition">Pre- and Post-composition</h2>
+  <pre class="Agda">  <a id="Semicategory.pre⋄"></a><a id="1163" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="1168" class="Symbol">:</a> <a id="1170" class="Symbol">∀</a> <a id="1172" class="Symbol">{</a><a id="1173" href="Semicategories.html#1173" class="Bound">x</a> <a id="1175" href="Semicategories.html#1175" class="Bound">y</a> <a id="1177" href="Semicategories.html#1177" class="Bound">z</a><a id="1178" class="Symbol">}</a> <a id="1180" class="Symbol">→</a> <a id="1182" href="Semicategories.html#845" class="Field">Hom</a> <a id="1186" href="Semicategories.html#1173" class="Bound">x</a> <a id="1188" href="Semicategories.html#1175" class="Bound">y</a> <a id="1190" class="Symbol">→</a> <a id="1192" href="Semicategories.html#845" class="Field">Hom</a> <a id="1196" href="Semicategories.html#1175" class="Bound">y</a> <a id="1198" href="Semicategories.html#1177" class="Bound">z</a> <a id="1200" class="Symbol">→</a> <a id="1202" href="Semicategories.html#845" class="Field">Hom</a> <a id="1206" href="Semicategories.html#1173" class="Bound">x</a> <a id="1208" href="Semicategories.html#1177" class="Bound">z</a>
+  <a id="1212" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="1217" href="Semicategories.html#1217" class="Bound">f</a> <a id="1219" href="Semicategories.html#1219" class="Bound">g</a> <a id="1221" class="Symbol">=</a> <a id="1223" href="Semicategories.html#1219" class="Bound">g</a> <a id="1225" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="1227" href="Semicategories.html#1217" class="Bound">f</a>
+
+  <a id="Semicategory.post⋄"></a><a id="1232" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="1238" class="Symbol">:</a> <a id="1240" class="Symbol">∀</a> <a id="1242" class="Symbol">{</a><a id="1243" href="Semicategories.html#1243" class="Bound">x</a> <a id="1245" href="Semicategories.html#1245" class="Bound">y</a> <a id="1247" href="Semicategories.html#1247" class="Bound">z</a><a id="1248" class="Symbol">}</a> <a id="1250" class="Symbol">→</a> <a id="1252" href="Semicategories.html#845" class="Field">Hom</a> <a id="1256" href="Semicategories.html#1245" class="Bound">y</a> <a id="1258" href="Semicategories.html#1247" class="Bound">z</a> <a id="1260" class="Symbol">→</a> <a id="1262" href="Semicategories.html#845" class="Field">Hom</a> <a id="1266" href="Semicategories.html#1243" class="Bound">x</a> <a id="1268" href="Semicategories.html#1245" class="Bound">y</a> <a id="1270" class="Symbol">→</a> <a id="1272" href="Semicategories.html#845" class="Field">Hom</a> <a id="1276" href="Semicategories.html#1243" class="Bound">x</a> <a id="1278" href="Semicategories.html#1247" class="Bound">z</a>
+  <a id="1282" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="1288" href="Semicategories.html#1288" class="Bound">g</a> <a id="1290" href="Semicategories.html#1290" class="Bound">f</a> <a id="1292" class="Symbol">=</a> <a id="1294" href="Semicategories.html#1288" class="Bound">g</a> <a id="1296" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="1298" href="Semicategories.html#1290" class="Bound">f</a>
+</pre>
+
+<p>An endomorphism <code>i : Hom y y</code> is <em>left neutral</em> if
+it acts trivially by post-composition on <code>Hom x y</code> for any
+<code>x : Ob</code>.</p>
+<p>Similarly, it's <em>right neutral</em> if it acts trivially by
+pre-composition on <code>Hom y z</code> for any <code>z : Ob</code>.</p>
+  <pre class="Agda">  <a id="1552" class="Keyword">module</a> <a id="1559" href="Semicategories.html#1559" class="Module">_</a> <a id="1561" class="Symbol">{</a><a id="1562" href="Semicategories.html#1562" class="Bound">y</a><a id="1563" class="Symbol">}</a> <a id="1565" class="Symbol">(</a><a id="1566" href="Semicategories.html#1566" class="Bound">i</a> <a id="1568" class="Symbol">:</a> <a id="1570" href="Semicategories.html#845" class="Field">Hom</a> <a id="1574" href="Semicategories.html#1562" class="Bound">y</a> <a id="1576" href="Semicategories.html#1562" class="Bound">y</a><a id="1577" class="Symbol">)</a> <a id="1579" class="Keyword">where</a>
+    <a id="1589" href="Semicategories.html#1589" class="Function">is-left-neut</a> <a id="1602" class="Symbol">=</a> <a id="1604" class="Symbol">∀</a> <a id="1606" class="Symbol">{</a><a id="1607" href="Semicategories.html#1607" class="Bound">x</a><a id="1608" class="Symbol">}</a> <a id="1610" class="Symbol">→</a> <a id="1612" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="1618" href="Semicategories.html#1566" class="Bound">i</a> <a id="1620" href="lib.Function.html#474" class="Function Operator">∼</a> <a id="1622" href="lib.Base.html#10694" class="Function">idf</a> <a id="1626" class="Symbol">(</a><a id="1627" href="Semicategories.html#845" class="Field">Hom</a> <a id="1631" href="Semicategories.html#1607" class="Bound">x</a> <a id="1633" href="Semicategories.html#1562" class="Bound">y</a><a id="1634" class="Symbol">)</a>
+    <a id="1640" href="Semicategories.html#1640" class="Function">is-right-neut</a> <a id="1654" class="Symbol">=</a> <a id="1656" class="Symbol">∀</a> <a id="1658" class="Symbol">{</a><a id="1659" href="Semicategories.html#1659" class="Bound">z</a><a id="1660" class="Symbol">}</a> <a id="1662" class="Symbol">→</a> <a id="1664" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="1669" href="Semicategories.html#1566" class="Bound">i</a> <a id="1671" href="lib.Function.html#474" class="Function Operator">∼</a> <a id="1673" href="lib.Base.html#10694" class="Function">idf</a> <a id="1677" class="Symbol">(</a><a id="1678" href="Semicategories.html#845" class="Field">Hom</a> <a id="1682" href="Semicategories.html#1562" class="Bound">y</a> <a id="1684" href="Semicategories.html#1659" class="Bound">z</a><a id="1685" class="Symbol">)</a>
+
+    <a id="1692" href="Semicategories.html#1692" class="Function">is-neutral</a> <a id="1703" class="Symbol">=</a> <a id="1705" href="Semicategories.html#1589" class="Function">is-left-neut</a> <a id="1718" href="lib.types.Sigma.html#250" class="Function Operator">×</a> <a id="1720" href="Semicategories.html#1640" class="Function">is-right-neut</a>
+</pre>
+
+<p>A morphism <code>f : Hom x y</code> is <em>left invertible</em> if,
+for any <code>w : Ob</code>, its post-composition with
+<code>Hom w x</code> is an equivalence of types.</p>
+<p>It's <em>right invertible</em> if its pre-composition with
+<code>Hom y z</code> is an equivalence of types for any
+<code>z : Ob</code>.</p>
+  <pre class="Agda">  <a id="2002" class="Keyword">module</a> <a id="2009" href="Semicategories.html#2009" class="Module">_</a> <a id="2011" class="Symbol">{</a><a id="2012" href="Semicategories.html#2012" class="Bound">x</a> <a id="2014" href="Semicategories.html#2014" class="Bound">y</a><a id="2015" class="Symbol">}</a> <a id="2017" class="Symbol">(</a><a id="2018" href="Semicategories.html#2018" class="Bound">f</a> <a id="2020" class="Symbol">:</a> <a id="2022" href="Semicategories.html#845" class="Field">Hom</a> <a id="2026" href="Semicategories.html#2012" class="Bound">x</a> <a id="2028" href="Semicategories.html#2014" class="Bound">y</a><a id="2029" class="Symbol">)</a> <a id="2031" class="Keyword">where</a>
+    <a id="2041" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="2053" class="Symbol">=</a> <a id="2055" class="Symbol">∀</a> <a id="2057" href="Semicategories.html#2057" class="Bound">w</a> <a id="2059" class="Symbol">→</a> <a id="2061" href="lib.Equivalence.html#1603" class="Record">is-equiv</a> <a id="2070" class="Symbol">(</a><a id="2071" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="2077" class="Symbol">{</a><a id="2078" href="Semicategories.html#2057" class="Bound">w</a><a id="2079" class="Symbol">}</a> <a id="2081" href="Semicategories.html#2018" class="Bound">f</a><a id="2082" class="Symbol">)</a>
+    <a id="2088" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="2101" class="Symbol">=</a> <a id="2103" class="Symbol">∀</a> <a id="2105" href="Semicategories.html#2105" class="Bound">z</a> <a id="2107" class="Symbol">→</a> <a id="2109" href="lib.Equivalence.html#1603" class="Record">is-equiv</a> <a id="2118" class="Symbol">(</a><a id="2119" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="2124" class="Symbol">{</a><a id="2125" class="Argument">z</a> <a id="2127" class="Symbol">=</a> <a id="2129" href="Semicategories.html#2105" class="Bound">z</a><a id="2130" class="Symbol">}</a> <a id="2132" href="Semicategories.html#2018" class="Bound">f</a><a id="2133" class="Symbol">)</a>
+</pre>
+
+<p>It's easily seen that left (right) neutral morphisms are left (right)
+invertible.</p>
+  <pre class="Agda">  <a id="2241" class="Keyword">module</a> <a id="2248" href="Semicategories.html#2248" class="Module">_</a> <a id="2250" class="Symbol">{</a><a id="2251" href="Semicategories.html#2251" class="Bound">y</a><a id="2252" class="Symbol">}</a> <a id="2254" class="Symbol">(</a><a id="2255" href="Semicategories.html#2255" class="Bound">i</a> <a id="2257" class="Symbol">:</a> <a id="2259" href="Semicategories.html#845" class="Field">Hom</a> <a id="2263" href="Semicategories.html#2251" class="Bound">y</a> <a id="2265" href="Semicategories.html#2251" class="Bound">y</a><a id="2266" class="Symbol">)</a> <a id="2268" class="Keyword">where</a>
+    <a id="2278" href="Semicategories.html#2278" class="Function">left-neut-left-inv</a> <a id="2297" class="Symbol">:</a> <a id="2299" href="Semicategories.html#1589" class="Function">is-left-neut</a> <a id="2312" href="Semicategories.html#2255" class="Bound">i</a> <a id="2314" class="Symbol">→</a> <a id="2316" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="2328" href="Semicategories.html#2255" class="Bound">i</a>
+    <a id="2334" href="Semicategories.html#2278" class="Function">left-neut-left-inv</a> <a id="2353" href="Semicategories.html#2353" class="Bound">lneut</a> <a id="2359" class="Symbol">_</a> <a id="2361" class="Symbol">=</a> <a id="2363" href="lib.Equivalence.html#2854" class="Function">is-eq</a> <a id="2369" class="Symbol">(</a><a id="2370" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="2376" href="Semicategories.html#2255" class="Bound">i</a><a id="2377" class="Symbol">)</a> <a id="2379" class="Symbol">(</a><a id="2380" href="lib.Base.html#10694" class="Function">idf</a> <a id="2384" class="Symbol">_)</a> <a id="2387" href="Semicategories.html#2353" class="Bound">lneut</a> <a id="2393" href="Semicategories.html#2353" class="Bound">lneut</a>
+
+    <a id="2404" href="Semicategories.html#2404" class="Function">right-neut-right-inv</a> <a id="2425" class="Symbol">:</a> <a id="2427" href="Semicategories.html#1640" class="Function">is-right-neut</a> <a id="2441" href="Semicategories.html#2255" class="Bound">i</a> <a id="2443" class="Symbol">→</a> <a id="2445" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="2458" href="Semicategories.html#2255" class="Bound">i</a>
+    <a id="2464" href="Semicategories.html#2404" class="Function">right-neut-right-inv</a> <a id="2485" href="Semicategories.html#2485" class="Bound">rneut</a> <a id="2491" class="Symbol">_</a> <a id="2493" class="Symbol">=</a> <a id="2495" href="lib.Equivalence.html#2854" class="Function">is-eq</a> <a id="2501" class="Symbol">(</a><a id="2502" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="2507" href="Semicategories.html#2255" class="Bound">i</a><a id="2508" class="Symbol">)</a> <a id="2510" class="Symbol">(</a><a id="2511" href="lib.Base.html#10694" class="Function">idf</a> <a id="2515" class="Symbol">_)</a> <a id="2518" href="Semicategories.html#2485" class="Bound">rneut</a> <a id="2524" href="Semicategories.html#2485" class="Bound">rneut</a>
+</pre>
+
+<h2 id="equivalences">Equivalences</h2>
+<p>The notion of an equivalence in a semicategory is fundamental.</p>
+<p>A morphism <code>f : Hom x y</code> is called a <em>equivalence</em>
+if it is both left- and right-invertible. Following Harpaz, we may also
+call f an <em>invertible morphism</em>.</p>
+  <pre class="Agda">  <a id="Semicategory.is-eqv"></a><a id="2809" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="2816" class="Symbol">:</a> <a id="2818" class="Symbol">∀</a> <a id="2820" class="Symbol">{</a><a id="2821" href="Semicategories.html#2821" class="Bound">x</a> <a id="2823" href="Semicategories.html#2823" class="Bound">y</a><a id="2824" class="Symbol">}</a> <a id="2826" class="Symbol">→</a> <a id="2828" href="Semicategories.html#845" class="Field">Hom</a> <a id="2832" href="Semicategories.html#2821" class="Bound">x</a> <a id="2834" href="Semicategories.html#2823" class="Bound">y</a> <a id="2836" class="Symbol">→</a> <a id="2838" href="lib.Base.html#1144" class="Function">Type</a> <a id="2843" class="Symbol">(</a><a id="2844" href="lib.Base.html#1137" class="Primitive">lmax</a> <a id="2849" href="Semicategories.html#759" class="Bound">j₁</a> <a id="2852" href="Semicategories.html#762" class="Bound">j₂</a><a id="2854" class="Symbol">)</a>
+  <a id="2858" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="2865" href="Semicategories.html#2865" class="Bound">f</a> <a id="2867" class="Symbol">=</a> <a id="2869" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="2881" href="Semicategories.html#2865" class="Bound">f</a> <a id="2883" href="lib.types.Sigma.html#250" class="Function Operator">×</a> <a id="2885" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="2898" href="Semicategories.html#2865" class="Bound">f</a>
+</pre>
+
+<p>In particular, any neutral morphism is an equivalence.</p>
+  <pre class="Agda">  <a id="Semicategory.is-neutral-is-eqv"></a><a id="2977" href="Semicategories.html#2977" class="Function">is-neutral-is-eqv</a> <a id="2995" class="Symbol">:</a> <a id="2997" class="Symbol">∀</a> <a id="2999" class="Symbol">{</a><a id="3000" href="Semicategories.html#3000" class="Bound">x</a><a id="3001" class="Symbol">}</a> <a id="3003" class="Symbol">(</a><a id="3004" href="Semicategories.html#3004" class="Bound">f</a> <a id="3006" class="Symbol">:</a> <a id="3008" href="Semicategories.html#845" class="Field">Hom</a> <a id="3012" href="Semicategories.html#3000" class="Bound">x</a> <a id="3014" href="Semicategories.html#3000" class="Bound">x</a><a id="3015" class="Symbol">)</a> <a id="3017" class="Symbol">→</a> <a id="3019" href="Semicategories.html#1692" class="Function">is-neutral</a> <a id="3030" href="Semicategories.html#3004" class="Bound">f</a> <a id="3032" class="Symbol">→</a> <a id="3034" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="3041" href="Semicategories.html#3004" class="Bound">f</a>
+  <a id="3045" href="Semicategories.html#2977" class="Function">is-neutral-is-eqv</a> <a id="3063" href="Semicategories.html#3063" class="Bound">f</a> <a id="3065" href="Semicategories.html#3065" class="Bound">neut</a> <a id="3070" class="Symbol">=</a>
+    <a id="3076" href="Semicategories.html#2278" class="Function">left-neut-left-inv</a> <a id="3095" href="Semicategories.html#3063" class="Bound">f</a> <a id="3097" class="Symbol">(</a><a id="3098" href="lib.Base.html#5493" class="Field">fst</a> <a id="3102" href="Semicategories.html#3065" class="Bound">neut</a><a id="3106" class="Symbol">)</a>
+    <a id="3112" href="lib.Base.html#5477" class="InductiveConstructor Operator">,</a> <a id="3114" href="Semicategories.html#2404" class="Function">right-neut-right-inv</a> <a id="3135" href="Semicategories.html#3063" class="Bound">f</a> <a id="3137" class="Symbol">(</a><a id="3138" href="lib.Base.html#5505" class="Field">snd</a> <a id="3142" href="Semicategories.html#3065" class="Bound">neut</a><a id="3146" class="Symbol">)</a>
+</pre>
+
+<p>We write <code>eqv x y</code> for the type of equivalences from x to
+y.</p>
+  <pre class="Agda">  <a id="Semicategory.eqv"></a><a id="3231" href="Semicategories.html#3231" class="Function">eqv</a> <a id="3235" class="Symbol">:</a> <a id="3237" href="Semicategories.html#827" class="Field">Ob</a> <a id="3240" class="Symbol">→</a> <a id="3242" href="Semicategories.html#827" class="Field">Ob</a> <a id="3245" class="Symbol">→</a> <a id="3247" href="lib.Base.html#1144" class="Function">Type</a> <a id="3252" class="Symbol">(</a><a id="3253" href="lib.Base.html#1137" class="Primitive">lmax</a> <a id="3258" href="Semicategories.html#759" class="Bound">j₁</a> <a id="3261" href="Semicategories.html#762" class="Bound">j₂</a><a id="3263" class="Symbol">)</a>
+  <a id="3267" href="Semicategories.html#3231" class="Function">eqv</a> <a id="3271" href="Semicategories.html#3271" class="Bound">x</a> <a id="3273" href="Semicategories.html#3273" class="Bound">y</a> <a id="3275" class="Symbol">=</a> <a id="3277" href="lib.Base.html#5401" class="Record">Σ</a> <a id="3279" class="Symbol">(</a><a id="3280" href="Semicategories.html#845" class="Field">Hom</a> <a id="3284" href="Semicategories.html#3271" class="Bound">x</a> <a id="3286" href="Semicategories.html#3273" class="Bound">y</a><a id="3287" class="Symbol">)</a> <a id="3289" href="Semicategories.html#2809" class="Function">is-eqv</a>
+
+  <a id="3299" class="Keyword">syntax</a> <a id="3306" href="Semicategories.html#3231" class="Function">eqv</a> <a id="3310" class="Bound">x</a> <a id="3312" class="Bound">y</a> <a id="3314" class="Symbol">=</a> <a id="3316" class="Bound">x</a> <a id="3318" class="Function">≅</a> <a id="3320" class="Bound">y</a>
+
+  <a id="3325" class="Keyword">module</a> <a id="3332" href="Semicategories.html#3332" class="Module">_</a> <a id="3334" class="Symbol">{</a><a id="3335" href="Semicategories.html#3335" class="Bound">x</a> <a id="3337" href="Semicategories.html#3337" class="Bound">y</a><a id="3338" class="Symbol">}</a> <a id="3340" class="Symbol">(</a><a id="3341" href="Semicategories.html#3341" class="Bound">e</a> <a id="3343" class="Symbol">:</a> <a id="3345" href="Semicategories.html#3335" class="Bound">x</a> <a id="3347" href="Semicategories.html#3231" class="Function">≅</a> <a id="3349" href="Semicategories.html#3337" class="Bound">y</a><a id="3350" class="Symbol">)</a> <a id="3352" class="Keyword">where</a>
+    <a id="3362" href="Semicategories.html#3362" class="Function">—&gt;</a> <a id="3365" class="Symbol">:</a> <a id="3367" href="Semicategories.html#845" class="Field">Hom</a> <a id="3371" href="Semicategories.html#3335" class="Bound">x</a> <a id="3373" href="Semicategories.html#3337" class="Bound">y</a> <a id="3375" class="Comment">-- That&#39;s an em-dash, \em</a>
+    <a id="3405" href="Semicategories.html#3362" class="Function">—&gt;</a> <a id="3408" class="Symbol">=</a> <a id="3410" href="lib.Base.html#5493" class="Field">fst</a> <a id="3414" href="Semicategories.html#3341" class="Bound">e</a>
+
+    <a id="3421" href="Semicategories.html#3421" class="Function">eqv-of</a> <a id="3428" class="Symbol">:</a> <a id="3430" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="3437" href="Semicategories.html#3362" class="Function">—&gt;</a>
+    <a id="3444" href="Semicategories.html#3421" class="Function">eqv-of</a> <a id="3451" class="Symbol">=</a> <a id="3453" href="lib.Base.html#5505" class="Field">snd</a> <a id="3457" href="Semicategories.html#3341" class="Bound">e</a>
+</pre>
+
+<p>Equivalences satisfy the 2-out-of-3 property:</p>
+  <pre class="Agda">  <a id="3527" class="Keyword">module</a> <a id="3534" href="Semicategories.html#3534" class="Module">_</a> <a id="3536" class="Symbol">{</a><a id="3537" href="Semicategories.html#3537" class="Bound">x</a> <a id="3539" href="Semicategories.html#3539" class="Bound">y</a> <a id="3541" href="Semicategories.html#3541" class="Bound">z</a><a id="3542" class="Symbol">}</a> <a id="3544" class="Symbol">(</a><a id="3545" href="Semicategories.html#3545" class="Bound">f</a> <a id="3547" class="Symbol">:</a> <a id="3549" href="Semicategories.html#845" class="Field">Hom</a> <a id="3553" href="Semicategories.html#3537" class="Bound">x</a> <a id="3555" href="Semicategories.html#3539" class="Bound">y</a><a id="3556" class="Symbol">)</a> <a id="3558" class="Symbol">(</a><a id="3559" href="Semicategories.html#3559" class="Bound">g</a> <a id="3561" class="Symbol">:</a> <a id="3563" href="Semicategories.html#845" class="Field">Hom</a> <a id="3567" href="Semicategories.html#3539" class="Bound">y</a> <a id="3569" href="Semicategories.html#3541" class="Bound">z</a><a id="3570" class="Symbol">)</a> <a id="3572" class="Symbol">(</a><a id="3573" href="Semicategories.html#3573" class="Bound">e</a> <a id="3575" class="Symbol">:</a> <a id="3577" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="3584" class="Symbol">(</a><a id="3585" href="Semicategories.html#3559" class="Bound">g</a> <a id="3587" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="3589" href="Semicategories.html#3545" class="Bound">f</a><a id="3590" class="Symbol">))</a> <a id="3593" class="Keyword">where</a>
+    <a id="3603" href="Semicategories.html#3603" class="Function">g⋄∘f⋄-equiv</a> <a id="3615" class="Symbol">:</a> <a id="3617" class="Symbol">∀</a> <a id="3619" class="Symbol">{</a><a id="3620" href="Semicategories.html#3620" class="Bound">x</a><a id="3621" class="Symbol">}</a> <a id="3623" class="Symbol">→</a> <a id="3625" href="lib.Equivalence.html#1603" class="Record">is-equiv</a> <a id="3634" class="Symbol">(</a><a id="3635" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="3641" class="Symbol">{</a><a id="3642" href="Semicategories.html#3620" class="Bound">x</a><a id="3643" class="Symbol">}</a> <a id="3645" href="Semicategories.html#3559" class="Bound">g</a> <a id="3647" href="lib.Base.html#10836" class="Function Operator">∘</a> <a id="3649" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="3655" href="Semicategories.html#3545" class="Bound">f</a><a id="3656" class="Symbol">)</a>
+    <a id="3662" href="Semicategories.html#3603" class="Function">g⋄∘f⋄-equiv</a> <a id="3674" class="Symbol">=</a> <a id="3676" href="lib.Base.html#4928" class="Function">transport</a> <a id="3686" href="lib.Equivalence.html#1603" class="Record">is-equiv</a> <a id="3695" class="Symbol">(</a><a id="3696" href="lib.Funext.html#4118" class="Function">λ=</a> <a id="3699" class="Symbol">(λ</a> <a id="3702" href="Semicategories.html#3702" class="Bound">_</a> <a id="3704" class="Symbol">→</a> <a id="3706" href="Semicategories.html#923" class="Field">ass</a><a id="3709" class="Symbol">))</a> <a id="3712" class="Symbol">(</a><a id="3713" href="lib.Base.html#5493" class="Field">fst</a> <a id="3717" href="Semicategories.html#3573" class="Bound">e</a> <a id="3719" class="Symbol">_)</a>
+
+    <a id="3727" href="Semicategories.html#3727" class="Function">⋄f∘⋄g-equiv</a> <a id="3739" class="Symbol">:</a> <a id="3741" class="Symbol">∀</a> <a id="3743" class="Symbol">{</a><a id="3744" href="Semicategories.html#3744" class="Bound">z</a><a id="3745" class="Symbol">}</a> <a id="3747" class="Symbol">→</a> <a id="3749" href="lib.Equivalence.html#1603" class="Record">is-equiv</a> <a id="3758" class="Symbol">(</a><a id="3759" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="3764" class="Symbol">{</a><a id="3765" class="Argument">z</a> <a id="3767" class="Symbol">=</a> <a id="3769" href="Semicategories.html#3744" class="Bound">z</a><a id="3770" class="Symbol">}</a> <a id="3772" href="Semicategories.html#3545" class="Bound">f</a> <a id="3774" href="lib.Base.html#10836" class="Function Operator">∘</a> <a id="3776" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="3781" href="Semicategories.html#3559" class="Bound">g</a><a id="3782" class="Symbol">)</a>
+    <a id="3788" href="Semicategories.html#3727" class="Function">⋄f∘⋄g-equiv</a> <a id="3800" class="Symbol">=</a> <a id="3802" href="lib.Base.html#4928" class="Function">transport</a> <a id="3812" href="lib.Equivalence.html#1603" class="Record">is-equiv</a> <a id="3821" class="Symbol">(</a><a id="3822" href="lib.Funext.html#4118" class="Function">λ=</a> <a id="3825" class="Symbol">(λ</a> <a id="3828" href="Semicategories.html#3828" class="Bound">_</a> <a id="3830" class="Symbol">→</a> <a id="3832" href="lib.PathGroupoid.html#1539" class="Function">!</a> <a id="3834" href="Semicategories.html#923" class="Field">ass</a><a id="3837" class="Symbol">))</a> <a id="3840" class="Symbol">(</a><a id="3841" href="lib.Base.html#5505" class="Field">snd</a> <a id="3845" href="Semicategories.html#3573" class="Bound">e</a> <a id="3847" class="Symbol">_)</a>
+
+    <a id="3855" href="Semicategories.html#3855" class="Function">2-of-3-pre</a> <a id="3866" class="Symbol">:</a> <a id="3868" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="3875" href="Semicategories.html#3559" class="Bound">g</a> <a id="3877" class="Symbol">→</a> <a id="3879" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="3886" href="Semicategories.html#3545" class="Bound">f</a>
+    <a id="3892" href="Semicategories.html#3855" class="Function">2-of-3-pre</a> <a id="3903" href="Semicategories.html#3903" class="Bound">g-eqv</a> <a id="3909" class="Symbol">=</a> <a id="3911" href="Semicategories.html#3954" class="Function">f-left-inv</a> <a id="3922" href="lib.Base.html#5477" class="InductiveConstructor Operator">,</a> <a id="3924" href="Semicategories.html#4086" class="Function">f-right-inv</a>
+      <a id="3942" class="Keyword">where</a>
+      <a id="3954" href="Semicategories.html#3954" class="Function">f-left-inv</a> <a id="3965" class="Symbol">:</a> <a id="3967" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="3979" href="Semicategories.html#3545" class="Bound">f</a>
+      <a id="3987" href="Semicategories.html#3954" class="Function">f-left-inv</a> <a id="3998" href="Semicategories.html#3998" class="Bound">w</a> <a id="4000" class="Symbol">=</a> <a id="4002" href="Equivalence.html#286" class="Function">Equivalence.2-of-3-pre</a> <a id="4025" class="Symbol">(</a><a id="4026" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="4032" href="Semicategories.html#3545" class="Bound">f</a><a id="4033" class="Symbol">)</a> <a id="4035" class="Symbol">(</a><a id="4036" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="4042" href="Semicategories.html#3559" class="Bound">g</a><a id="4043" class="Symbol">)</a>
+        <a id="4053" href="Semicategories.html#3603" class="Function">g⋄∘f⋄-equiv</a> <a id="4065" class="Symbol">(</a><a id="4066" href="lib.Base.html#5493" class="Field">fst</a> <a id="4070" href="Semicategories.html#3903" class="Bound">g-eqv</a> <a id="4076" class="Symbol">_)</a>
+
+      <a id="4086" href="Semicategories.html#4086" class="Function">f-right-inv</a> <a id="4098" class="Symbol">:</a> <a id="4100" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="4113" href="Semicategories.html#3545" class="Bound">f</a>
+      <a id="4121" href="Semicategories.html#4086" class="Function">f-right-inv</a> <a id="4133" href="Semicategories.html#4133" class="Bound">z</a> <a id="4135" class="Symbol">=</a> <a id="4137" href="Equivalence.html#674" class="Function">Equivalence.2-of-3-post</a> <a id="4161" class="Symbol">(</a><a id="4162" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="4167" href="Semicategories.html#3559" class="Bound">g</a><a id="4168" class="Symbol">)</a> <a id="4170" class="Symbol">(</a><a id="4171" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="4176" href="Semicategories.html#3545" class="Bound">f</a><a id="4177" class="Symbol">)</a>
+        <a id="4187" href="Semicategories.html#3727" class="Function">⋄f∘⋄g-equiv</a> <a id="4199" class="Symbol">(</a><a id="4200" href="lib.Base.html#5505" class="Field">snd</a> <a id="4204" href="Semicategories.html#3903" class="Bound">g-eqv</a> <a id="4210" class="Symbol">_)</a>
+
+    <a id="4218" href="Semicategories.html#4218" class="Function">2-of-3-post</a> <a id="4230" class="Symbol">:</a> <a id="4232" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="4239" href="Semicategories.html#3545" class="Bound">f</a> <a id="4241" class="Symbol">→</a> <a id="4243" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="4250" href="Semicategories.html#3559" class="Bound">g</a>
+    <a id="4256" href="Semicategories.html#4218" class="Function">2-of-3-post</a> <a id="4268" href="Semicategories.html#4268" class="Bound">f-eqv</a> <a id="4274" class="Symbol">=</a> <a id="4276" href="Semicategories.html#4319" class="Function">g-left-inv</a> <a id="4287" href="lib.Base.html#5477" class="InductiveConstructor Operator">,</a> <a id="4289" href="Semicategories.html#4452" class="Function">g-right-inv</a>
+      <a id="4307" class="Keyword">where</a>
+      <a id="4319" href="Semicategories.html#4319" class="Function">g-left-inv</a> <a id="4330" class="Symbol">:</a> <a id="4332" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="4344" href="Semicategories.html#3559" class="Bound">g</a>
+      <a id="4352" href="Semicategories.html#4319" class="Function">g-left-inv</a> <a id="4363" href="Semicategories.html#4363" class="Bound">w</a> <a id="4365" class="Symbol">=</a> <a id="4367" href="Equivalence.html#674" class="Function">Equivalence.2-of-3-post</a> <a id="4391" class="Symbol">(</a><a id="4392" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="4398" href="Semicategories.html#3545" class="Bound">f</a><a id="4399" class="Symbol">)</a> <a id="4401" class="Symbol">(</a><a id="4402" href="Semicategories.html#1232" class="Function">post⋄</a> <a id="4408" href="Semicategories.html#3559" class="Bound">g</a><a id="4409" class="Symbol">)</a>
+        <a id="4419" href="Semicategories.html#3603" class="Function">g⋄∘f⋄-equiv</a> <a id="4431" class="Symbol">(</a><a id="4432" href="lib.Base.html#5493" class="Field">fst</a> <a id="4436" href="Semicategories.html#4268" class="Bound">f-eqv</a> <a id="4442" class="Symbol">_)</a>
+
+      <a id="4452" href="Semicategories.html#4452" class="Function">g-right-inv</a> <a id="4464" class="Symbol">:</a> <a id="4466" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="4479" href="Semicategories.html#3559" class="Bound">g</a>
+      <a id="4487" href="Semicategories.html#4452" class="Function">g-right-inv</a> <a id="4499" href="Semicategories.html#4499" class="Bound">z</a> <a id="4501" class="Symbol">=</a> <a id="4503" href="Equivalence.html#286" class="Function">Equivalence.2-of-3-pre</a> <a id="4526" class="Symbol">(</a><a id="4527" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="4532" href="Semicategories.html#3559" class="Bound">g</a><a id="4533" class="Symbol">)</a> <a id="4535" class="Symbol">(</a><a id="4536" href="Semicategories.html#1163" class="Function">pre⋄</a> <a id="4541" href="Semicategories.html#3545" class="Bound">f</a><a id="4542" class="Symbol">)</a>
+        <a id="4552" href="Semicategories.html#3727" class="Function">⋄f∘⋄g-equiv</a> <a id="4564" class="Symbol">(</a><a id="4565" href="lib.Base.html#5505" class="Field">snd</a> <a id="4569" href="Semicategories.html#4268" class="Bound">f-eqv</a> <a id="4575" class="Symbol">_)</a>
+</pre>
+
+<h2 id="initial-and-terminal-morphisms">Initial and Terminal
+Morphisms</h2>
+<p>We may consider the (<em>very</em> wild!) "slice/coslice
+non-associative semicategories" of a wild semicategory, and formulate
+the notion of initial and terminal morphisms in such.</p>
+  <pre class="Agda">  <a id="Semicategory.initial-under"></a><a id="4845" href="Semicategories.html#4845" class="Function">initial-under</a> <a id="4859" class="Symbol">:</a> <a id="4861" class="Symbol">(</a><a id="4862" href="Semicategories.html#4862" class="Bound">x</a> <a id="4864" class="Symbol">:</a> <a id="4866" href="Semicategories.html#827" class="Field">Ob</a><a id="4868" class="Symbol">)</a> <a id="4870" class="Symbol">{</a><a id="4871" href="Semicategories.html#4871" class="Bound">y</a> <a id="4873" class="Symbol">:</a> <a id="4875" href="Semicategories.html#827" class="Field">Ob</a><a id="4877" class="Symbol">}</a> <a id="4879" class="Symbol">→</a> <a id="4881" href="Semicategories.html#845" class="Field">Hom</a> <a id="4885" href="Semicategories.html#4862" class="Bound">x</a> <a id="4887" href="Semicategories.html#4871" class="Bound">y</a> <a id="4889" class="Symbol">→</a> <a id="4891" href="lib.Base.html#1144" class="Function">Type</a> <a id="4896" class="Symbol">(</a><a id="4897" href="lib.Base.html#1137" class="Primitive">lmax</a> <a id="4902" href="Semicategories.html#759" class="Bound">j₁</a> <a id="4905" href="Semicategories.html#762" class="Bound">j₂</a><a id="4907" class="Symbol">)</a>
+  <a id="4911" href="Semicategories.html#4845" class="Function">initial-under</a> <a id="4925" href="Semicategories.html#4925" class="Bound">x</a> <a id="4927" class="Symbol">{</a><a id="4928" href="Semicategories.html#4928" class="Bound">y</a><a id="4929" class="Symbol">}</a> <a id="4931" href="Semicategories.html#4931" class="Bound">f</a> <a id="4933" class="Symbol">=</a>
+    <a id="4939" class="Symbol">(</a><a id="4940" href="Semicategories.html#4940" class="Bound">z</a> <a id="4942" class="Symbol">:</a> <a id="4944" href="Semicategories.html#827" class="Field">Ob</a><a id="4946" class="Symbol">)</a> <a id="4948" class="Symbol">(</a><a id="4949" href="Semicategories.html#4949" class="Bound">h</a> <a id="4951" class="Symbol">:</a> <a id="4953" href="Semicategories.html#845" class="Field">Hom</a> <a id="4957" href="Semicategories.html#4925" class="Bound">x</a> <a id="4959" href="Semicategories.html#4940" class="Bound">z</a><a id="4960" class="Symbol">)</a> <a id="4962" class="Symbol">→</a> <a id="4964" href="lib.NType.html#1069" class="Function">is-contr</a> <a id="4973" class="Symbol">(</a><a id="4974" href="Notation.html#199" class="Function">Σ[</a> <a id="4977" href="Semicategories.html#4977" class="Bound">g</a> <a id="4979" href="Notation.html#199" class="Function">﹕</a> <a id="4981" href="Semicategories.html#845" class="Field">Hom</a> <a id="4985" href="Semicategories.html#4928" class="Bound">y</a> <a id="4987" href="Semicategories.html#4940" class="Bound">z</a> <a id="4989" href="Notation.html#199" class="Function">]</a> <a id="4991" href="Semicategories.html#4977" class="Bound">g</a> <a id="4993" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="4995" href="Semicategories.html#4931" class="Bound">f</a> <a id="4997" href="lib.Base.html#1953" class="Datatype Operator">==</a> <a id="5000" href="Semicategories.html#4949" class="Bound">h</a><a id="5001" class="Symbol">)</a>
+
+  <a id="Semicategory.terminal-over"></a><a id="5006" href="Semicategories.html#5006" class="Function">terminal-over</a> <a id="5020" class="Symbol">:</a> <a id="5022" class="Symbol">{</a><a id="5023" href="Semicategories.html#5023" class="Bound">x</a> <a id="5025" class="Symbol">:</a> <a id="5027" href="Semicategories.html#827" class="Field">Ob</a><a id="5029" class="Symbol">}</a> <a id="5031" class="Symbol">(</a><a id="5032" href="Semicategories.html#5032" class="Bound">y</a> <a id="5034" class="Symbol">:</a> <a id="5036" href="Semicategories.html#827" class="Field">Ob</a><a id="5038" class="Symbol">)</a> <a id="5040" class="Symbol">→</a> <a id="5042" href="Semicategories.html#845" class="Field">Hom</a> <a id="5046" href="Semicategories.html#5023" class="Bound">x</a> <a id="5048" href="Semicategories.html#5032" class="Bound">y</a> <a id="5050" class="Symbol">→</a> <a id="5052" href="lib.Base.html#1144" class="Function">Type</a> <a id="5057" class="Symbol">(</a><a id="5058" href="lib.Base.html#1137" class="Primitive">lmax</a> <a id="5063" href="Semicategories.html#759" class="Bound">j₁</a> <a id="5066" href="Semicategories.html#762" class="Bound">j₂</a><a id="5068" class="Symbol">)</a>
+  <a id="5072" href="Semicategories.html#5006" class="Function">terminal-over</a> <a id="5086" class="Symbol">{</a><a id="5087" href="Semicategories.html#5087" class="Bound">x</a><a id="5088" class="Symbol">}</a> <a id="5090" href="Semicategories.html#5090" class="Bound">y</a> <a id="5092" href="Semicategories.html#5092" class="Bound">g</a> <a id="5094" class="Symbol">=</a>
+    <a id="5100" class="Symbol">(</a><a id="5101" href="Semicategories.html#5101" class="Bound">w</a> <a id="5103" class="Symbol">:</a> <a id="5105" href="Semicategories.html#827" class="Field">Ob</a><a id="5107" class="Symbol">)</a> <a id="5109" class="Symbol">(</a><a id="5110" href="Semicategories.html#5110" class="Bound">h</a> <a id="5112" class="Symbol">:</a> <a id="5114" href="Semicategories.html#845" class="Field">Hom</a> <a id="5118" href="Semicategories.html#5101" class="Bound">w</a> <a id="5120" href="Semicategories.html#5090" class="Bound">y</a><a id="5121" class="Symbol">)</a> <a id="5123" class="Symbol">→</a> <a id="5125" href="lib.NType.html#1069" class="Function">is-contr</a> <a id="5134" class="Symbol">(</a><a id="5135" href="Notation.html#199" class="Function">Σ[</a> <a id="5138" href="Semicategories.html#5138" class="Bound">f</a> <a id="5140" href="Notation.html#199" class="Function">﹕</a> <a id="5142" href="Semicategories.html#845" class="Field">Hom</a> <a id="5146" href="Semicategories.html#5101" class="Bound">w</a> <a id="5148" href="Semicategories.html#5087" class="Bound">x</a> <a id="5150" href="Notation.html#199" class="Function">]</a> <a id="5152" href="Semicategories.html#5092" class="Bound">g</a> <a id="5154" href="Semicategories.html#873" class="Field Operator">⋄</a> <a id="5156" href="Semicategories.html#5138" class="Bound">f</a> <a id="5158" href="lib.Base.html#1953" class="Datatype Operator">==</a> <a id="5161" href="Semicategories.html#5110" class="Bound">h</a><a id="5162" class="Symbol">)</a>
+</pre>
+
+<p>With the contractible map definition of equivalence of types, the
+properties of left and right invertibility are just terminality-over and
+initiality-under.</p>
+  <pre class="Agda">  <a id="5347" class="Keyword">module</a> <a id="5354" href="Semicategories.html#5354" class="Module">_</a> <a id="5356" class="Symbol">{</a><a id="5357" href="Semicategories.html#5357" class="Bound">x</a> <a id="5359" href="Semicategories.html#5359" class="Bound">y</a><a id="5360" class="Symbol">}</a> <a id="5362" class="Symbol">(</a><a id="5363" href="Semicategories.html#5363" class="Bound">f</a> <a id="5365" class="Symbol">:</a> <a id="5367" href="Semicategories.html#845" class="Field">Hom</a> <a id="5371" href="Semicategories.html#5357" class="Bound">x</a> <a id="5373" href="Semicategories.html#5359" class="Bound">y</a><a id="5374" class="Symbol">)</a> <a id="5376" class="Keyword">where</a>
+    <a id="5386" href="Semicategories.html#5386" class="Function">left-inv-terminal-over</a> <a id="5409" class="Symbol">:</a> <a id="5411" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="5423" href="Semicategories.html#5363" class="Bound">f</a> <a id="5425" class="Symbol">→</a> <a id="5427" href="Semicategories.html#5006" class="Function">terminal-over</a> <a id="5441" href="Semicategories.html#5359" class="Bound">y</a> <a id="5443" href="Semicategories.html#5363" class="Bound">f</a>
+    <a id="5449" href="Semicategories.html#5386" class="Function">left-inv-terminal-over</a> <a id="5472" href="Semicategories.html#5472" class="Bound">f-left-inv</a> <a id="5483" href="Semicategories.html#5483" class="Bound">w</a> <a id="5485" class="Symbol">=</a> <a id="5487" href="lib.Equivalence2.html#1368" class="Function">equiv-is-contr-map</a> <a id="5506" class="Symbol">(</a><a id="5507" href="Semicategories.html#5472" class="Bound">f-left-inv</a> <a id="5518" href="Semicategories.html#5483" class="Bound">w</a><a id="5519" class="Symbol">)</a>
+
+    <a id="5526" href="Semicategories.html#5526" class="Function">terminal-over-left-inv</a> <a id="5549" class="Symbol">:</a> <a id="5551" href="Semicategories.html#5006" class="Function">terminal-over</a> <a id="5565" href="Semicategories.html#5359" class="Bound">y</a> <a id="5567" href="Semicategories.html#5363" class="Bound">f</a> <a id="5569" class="Symbol">→</a> <a id="5571" href="Semicategories.html#2041" class="Function">is-left-inv</a> <a id="5583" href="Semicategories.html#5363" class="Bound">f</a>
+    <a id="5589" href="Semicategories.html#5526" class="Function">terminal-over-left-inv</a> <a id="5612" href="Semicategories.html#5612" class="Bound">term</a> <a id="5617" href="Semicategories.html#5617" class="Bound">w</a> <a id="5619" class="Symbol">=</a> <a id="5621" href="lib.Equivalence2.html#1550" class="Function">contr-map-is-equiv</a> <a id="5640" class="Symbol">(</a><a id="5641" href="Semicategories.html#5612" class="Bound">term</a> <a id="5646" href="Semicategories.html#5617" class="Bound">w</a><a id="5647" class="Symbol">)</a>
+
+    <a id="5654" href="Semicategories.html#5654" class="Function">right-inv-initial-under</a> <a id="5678" class="Symbol">:</a> <a id="5680" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="5693" href="Semicategories.html#5363" class="Bound">f</a> <a id="5695" class="Symbol">→</a> <a id="5697" href="Semicategories.html#4845" class="Function">initial-under</a> <a id="5711" href="Semicategories.html#5357" class="Bound">x</a> <a id="5713" href="Semicategories.html#5363" class="Bound">f</a>
+    <a id="5719" href="Semicategories.html#5654" class="Function">right-inv-initial-under</a> <a id="5743" href="Semicategories.html#5743" class="Bound">f-right-inv</a> <a id="5755" href="Semicategories.html#5755" class="Bound">z</a> <a id="5757" class="Symbol">=</a> <a id="5759" href="lib.Equivalence2.html#1368" class="Function">equiv-is-contr-map</a> <a id="5778" class="Symbol">(</a><a id="5779" href="Semicategories.html#5743" class="Bound">f-right-inv</a> <a id="5791" href="Semicategories.html#5755" class="Bound">z</a><a id="5792" class="Symbol">)</a>
+
+    <a id="5799" href="Semicategories.html#5799" class="Function">initial-under-right-inv</a> <a id="5823" class="Symbol">:</a> <a id="5825" href="Semicategories.html#4845" class="Function">initial-under</a> <a id="5839" href="Semicategories.html#5357" class="Bound">x</a> <a id="5841" href="Semicategories.html#5363" class="Bound">f</a> <a id="5843" class="Symbol">→</a> <a id="5845" href="Semicategories.html#2088" class="Function">is-right-inv</a> <a id="5858" href="Semicategories.html#5363" class="Bound">f</a>
+    <a id="5864" href="Semicategories.html#5799" class="Function">initial-under-right-inv</a> <a id="5888" href="Semicategories.html#5888" class="Bound">init</a> <a id="5893" href="Semicategories.html#5893" class="Bound">z</a> <a id="5895" class="Symbol">=</a> <a id="5897" href="lib.Equivalence2.html#1550" class="Function">contr-map-is-equiv</a> <a id="5916" class="Symbol">(</a><a id="5917" href="Semicategories.html#5888" class="Bound">init</a> <a id="5922" href="Semicategories.html#5893" class="Bound">z</a><a id="5923" class="Symbol">)</a>
+</pre>
+
+<p>Immediate corollary: equivalences are exactly those morphisms initial
+under their source and terminal over their target.</p>
+  <pre class="Agda">    <a id="6072" href="Semicategories.html#6072" class="Function">is-eqv-initial-and-terminal</a> <a id="6100" class="Symbol">:</a>
+      <a id="6108" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="6115" href="Semicategories.html#5363" class="Bound">f</a>
+      <a id="6123" class="Symbol">→</a> <a id="6125" href="Semicategories.html#4845" class="Function">initial-under</a> <a id="6139" href="Semicategories.html#5357" class="Bound">x</a> <a id="6141" href="Semicategories.html#5363" class="Bound">f</a> <a id="6143" href="lib.types.Sigma.html#250" class="Function Operator">×</a> <a id="6145" href="Semicategories.html#5006" class="Function">terminal-over</a> <a id="6159" href="Semicategories.html#5359" class="Bound">y</a> <a id="6161" href="Semicategories.html#5363" class="Bound">f</a>
+    <a id="6167" href="Semicategories.html#6072" class="Function">is-eqv-initial-and-terminal</a> <a id="6195" href="Semicategories.html#6195" class="Bound">f-eqv</a> <a id="6201" class="Symbol">=</a>
+      <a id="6209" href="Semicategories.html#5654" class="Function">right-inv-initial-under</a> <a id="6233" class="Symbol">(</a><a id="6234" href="lib.Base.html#5505" class="Field">snd</a> <a id="6238" href="Semicategories.html#6195" class="Bound">f-eqv</a><a id="6243" class="Symbol">)</a>
+      <a id="6251" href="lib.Base.html#5477" class="InductiveConstructor Operator">,</a> <a id="6253" href="Semicategories.html#5386" class="Function">left-inv-terminal-over</a> <a id="6276" class="Symbol">(</a><a id="6277" href="lib.Base.html#5493" class="Field">fst</a> <a id="6281" href="Semicategories.html#6195" class="Bound">f-eqv</a><a id="6286" class="Symbol">)</a>
+
+    <a id="6293" href="Semicategories.html#6293" class="Function">initial-and-terminal-is-eqv</a> <a id="6321" class="Symbol">:</a>
+      <a id="6329" href="Semicategories.html#4845" class="Function">initial-under</a> <a id="6343" href="Semicategories.html#5357" class="Bound">x</a> <a id="6345" href="Semicategories.html#5363" class="Bound">f</a> <a id="6347" href="lib.types.Sigma.html#250" class="Function Operator">×</a> <a id="6349" href="Semicategories.html#5006" class="Function">terminal-over</a> <a id="6363" href="Semicategories.html#5359" class="Bound">y</a> <a id="6365" href="Semicategories.html#5363" class="Bound">f</a>
+      <a id="6373" class="Symbol">→</a> <a id="6375" href="Semicategories.html#2809" class="Function">is-eqv</a> <a id="6382" href="Semicategories.html#5363" class="Bound">f</a>
+    <a id="6388" href="Semicategories.html#6293" class="Function">initial-and-terminal-is-eqv</a> <a id="6416" class="Symbol">(</a><a id="6417" href="Semicategories.html#6417" class="Bound">init</a> <a id="6422" href="lib.Base.html#5477" class="InductiveConstructor Operator">,</a> <a id="6424" href="Semicategories.html#6424" class="Bound">term</a><a id="6428" class="Symbol">)</a> <a id="6430" class="Symbol">=</a>
+      <a id="6438" href="Semicategories.html#5526" class="Function">terminal-over-left-inv</a> <a id="6461" href="Semicategories.html#6424" class="Bound">term</a>
+      <a id="6472" href="lib.Base.html#5477" class="InductiveConstructor Operator">,</a> <a id="6474" href="Semicategories.html#5799" class="Function">initial-under-right-inv</a> <a id="6498" href="Semicategories.html#6417" class="Bound">init</a>
+</pre>
+</body>
+</html>
