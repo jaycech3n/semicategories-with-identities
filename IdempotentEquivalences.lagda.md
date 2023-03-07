@@ -1,12 +1,16 @@
 Idempotent Equivalences
 =======================
 
-In <cite Kraus '21> it is shown that idempotent equivalences are a
-particularly nice way to add identities to semicategories.
+In [*Internal ∞-Categorical Models of Dependent Type Theory: Towards 2LTT Eating
+HoTT*](https://arxiv.org/abs/2009.01883) (Kraus 2021) it is shown that
+idempotent equivalences are a particularly nice way to add identities to
+semicategories.
 
 In particular, they give a *propositional* notion of identity structure, without
-requiring explicit truncation. This is shown in the paper and the accompanying
-Agda formalization at <link>, most results of which are reproduced here.
+requiring explicit truncation. This is shown in the aforementioned paper and the
+accompanying Agda formalization at
+<https://github.com/nicolaikraus/idempotentEquivalences>, most results of which
+are reproduced here.
 
 ```agda
 {-# OPTIONS --without-K --rewriting #-}

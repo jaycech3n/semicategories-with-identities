@@ -33,11 +33,7 @@ module _ {j₁ j₂} (C : Semicategory j₁ j₂) where
 
   An idempotent endomorphism f is one where f ⋄ f == f.
 
-  In <cite Kraus '21> it is shown that *idempotent equivalences* are a
-  particularly nice way to add identities to semicategories. The proof that
-  these already form a proposition without requiring explicit truncation is
-  given in <cite paper and Agda formalization>, and also reproduced in
-  <IdempotentEquivalences.lagda.md>.
+  See the file <IdempotentEquivalences.lagda.md> for more.
 
   ```agda
   open import IdempotentEquivalences C
